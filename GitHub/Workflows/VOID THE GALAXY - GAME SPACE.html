@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#08080c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>VOID THE GALAXY - GAME SPACE</title>
+<link rel="manifest" id="manifestLink">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#0a0a0f;
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    color:#fff;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .phone {
+    width:min(100vw, 420px);
+    height:min(100vh, 860px);
+    max-height:100vh;
+    border-radius:32px;
+    overflow:hidden;
+    position:relative;
+    background:#08080c;
+    box-shadow:0 0 0 1px rgba(255,45,45,0.15), 0 30px 80px rgba(0,0,0,0.9);
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 20px 6px;
+    font-size:12px;
+    font-weight:600;
+    color:#aaa;
+    background:#08080c;
+    flex-shrink:0;
+  }
+  .status-bar .right { display:flex; gap:6px; align-items:center; }
+  .battery-indicator {
+    display:flex; align-items:center; gap:4px;
+    font-size:11px;
+  }
+  .battery-bar {
+    width:22px; height:10px;
+    border:1.5px solid #666;
+    border-radius:3px;
+    position:relative;
+    padding:1px;
+  }
+  .battery-bar::after {
+    content:'';
+    position:absolute;
+    right:-3px; top:50%;
+    transform:translateY(-50%);
+    width:2px; height:4px;
+    background:#666;
+    border-radius:0 1px 1px 0;
+  }
+  .battery-fill {
+    height:100%;
+    background:#00cc66;
+    border-radius:1px;
+    transition:.3s;
+  }
+
+  /* HEADER */
+  .header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 18px 10px;
+    background:#08080c;
+    flex-shrink:0;
+  }
+  .header-left { display:flex; align-items:center; gap:10px; }
+  .logo-mark {
+    width:38px; height:38px;
+    border-radius:11px;
+    background:linear-gradient(135deg, #ff2d2d, #b80000);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:17px;
+    color:#fff;
+    box-shadow:0 4px 18px rgba(255,45,45,0.4);
+    position:relative;
+  }
+  .logo-mark::after {
+    content:'';
+    position:absolute; inset:3px;
+    border-radius:8px;
+    border:1.5px solid rgba(255,255,255,0.15);
+  }
+  .header-title {
+    font-size:16px; font-weight:800; letter-spacing:0.5px;
+    color:#fff;
+    line-height:1.2;
+  }
+  .header-title span { color:#ff2d2d; }
+  .header-title small {
+    display:block; font-size:9px; font-weight:600; letter-spacing:2px;
+    color:#555; text-transform:uppercase; margin-top:2px;
+  }
+  .header-icons { display:flex; gap:14px; }
+  .header-icons .ic {
+    width:34px; height:34px;
+    border-radius:50%;
+    background:#151518;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px;
+    border:1px solid #222;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .header-icons .ic:active { background:#222; }
+
+  /* SCROLL */
+  .scroll {
+    flex:1;
+    overflow-y:auto;
+    padding:0 16px 100px;
+    scrollbar-width:none;
+  }
+  .scroll::-webkit-scrollbar { display:none; }
+
+  /* BANNER */
+  .banner {
+    border-radius:18px;
+    padding:18px 18px 16px;
+    margin-bottom:16px;
+    background:linear-gradient(135deg, #1a0505, #120208);
+    border:1px solid rgba(255,45,45,0.25);
+    position:relative;
+    overflow:hidden;
+  }
+  .banner::before {
+    content:'';
+    position:absolute;
+    top:-60px; right:-40px;
+    width:180px; height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,45,45,0.25), transparent 70%);
+    pointer-events:none;
+  }
+  .banner-top {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    position:relative; z-index:1;
+  }
+  .banner-tag {
+    font-size:9px; font-weight:800; letter-spacing:2px;
+    color:#ff2d2d; text-transform:uppercase;
+    background:rgba(255,45,45,0.12);
+    padding:4px 10px; border-radius:20px;
+    border:1px solid rgba(255,45,45,0.25);
+    display:inline-block;
+    margin-bottom:8px;
+  }
+  .banner h2 {
+    font-size:20px; font-weight:900; letter-spacing:0.5px;
+    line-height:1.2;
+    color:#fff;
+  }
+  .banner h2 em { color:#ff2d2d; font-style:normal; }
+  .banner p {
+    font-size:11px; color:#777; margin-top:6px; line-height:1.5;
+    max-width:240px;
+  }
+  .banner-orb {
+    width:64px; height:64px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ff5555, #8b0000 70%, #3a0000);
+    box-shadow:0 0 40px rgba(255,45,45,0.5), inset -6px -6px 16px rgba(0,0,0,0.6), inset 4px 4px 12px rgba(255,120,120,0.3);
+    flex-shrink:0;
+    animation:orbFloat 4s ease-in-out infinite;
+    position:relative; z-index:1;
+  }
+  @keyframes orbFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  /* STATS */
+  .stats-strip {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .stat-box {
+    background:#111115;
+    border:1px solid #1e1e24;
+    border-radius:13px;
+    padding:12px 10px 10px;
+    text-align:center;
+    transition:.2s;
+  }
+  .stat-box .val {
+    font-size:20px; font-weight:900;
+    color:#ff2d2d;
+    line-height:1;
+    letter-spacing:-0.5px;
+    font-variant-numeric:tabular-nums;
+  }
+  .stat-box .val small { font-size:10px; font-weight:700; color:#ff5555; }
+  .stat-box .lbl {
+    font-size:9px; font-weight:700;
+    color:#555;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    margin-top:5px;
+  }
+
+  /* SECTION */
+  .sec-title {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:12px;
+  }
+  .sec-title h3 {
+    font-size:14px; font-weight:800; letter-spacing:0.5px;
+    color:#eee;
+    display:flex; align-items:center; gap:7px;
+  }
+  .sec-title h3::before {
+    content:'';
+    width:4px; height:16px;
+    border-radius:2px;
+    background:#ff2d2d;
+  }
+  .sec-title a {
+    font-size:11px; font-weight:700;
+    color:#ff2d2d;
+    text-decoration:none;
+    cursor:pointer;
+  }
+
+  /* GAME GRID */
+  .game-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .game-item {
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .game-item:active { transform:scale(0.94); }
+  .game-icon {
+    width:100%;
+    aspect-ratio:1;
+    border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px;
+    margin-bottom:6px;
+    position:relative;
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow:0 4px 14px rgba(0,0,0,0.5);
+  }
+  .game-icon::after {
+    content:'';
+    position:absolute; inset:0;
+    border-radius:16px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 50%);
+    pointer-events:none;
+  }
+  .game-item .gname {
+    font-size:9.5px; font-weight:700;
+    color:#aaa;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    letter-spacing:0.2px;
+  }
+  .game-item .gtime {
+    font-size:8px; color:#444; font-weight:600; margin-top:1px;
+  }
+
+  /* LABS */
+  .labs-grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .lab-card {
+    background:#111115;
+    border:1px solid #1e1e24;
+    border-radius:16px;
+    padding:14px 13px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+    transition:.2s;
+    position:relative;
+    overflow:hidden;
+  }
+  .lab-card:active { background:#18181e; }
+  .lab-card .lab-ic {
+    width:38px; height:38px;
+    border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px;
+    flex-shrink:0;
+    background:rgba(255,45,45,0.1);
+    border:1px solid rgba(255,45,45,0.15);
+  }
+  .lab-card .lab-info { flex:1; min-width:0; }
+  .lab-card .lab-info h4 {
+    font-size:11.5px; font-weight:800; color:#ddd;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .lab-card .lab-info p {
+    font-size:9px; color:#555; font-weight:600; margin-top:2px;
+  }
+  .lab-card .lab-toggle {
+    width:36px; height:20px;
+    border-radius:10px;
+    background:#222;
+    position:relative;
+    flex-shrink:0;
+    transition:.3s;
+    border:1px solid #333;
+  }
+  .lab-card .lab-toggle::after {
+    content:'';
+    position:absolute;
+    top:2px; left:2px;
+    width:14px; height:14px;
+    border-radius:50%;
+    background:#555;
+    transition:.3s;
+  }
+  .lab-card.active .lab-toggle { background:rgba(255,45,45,0.25); border-color:rgba(255,45,45,0.4); }
+  .lab-card.active .lab-toggle::after { left:18px; background:#ff2d2d; box-shadow:0 0 10px rgba(255,45,45,0.6); }
+
+  /* MONITOR */
+  .monitor-card {
+    background:#111115;
+    border:1px solid #1e1e24;
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:20px;
+  }
+  .monitor-head {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:14px;
+  }
+  .monitor-head h4 {
+    font-size:12px; font-weight:800; color:#ddd;
+    letter-spacing:1px; text-transform:uppercase;
+  }
+  .monitor-head .live-dot {
+    display:flex; align-items:center; gap:5px;
+    font-size:9px; font-weight:700; color:#ff2d2d;
+    letter-spacing:1px;
+  }
+  .monitor-head .live-dot::before {
+    content:'';
+    width:6px; height:6px;
+    border-radius:50%;
+    background:#ff2d2d;
+    animation:blink 1.2s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .monitor-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px solid #1a1a20;
+  }
+  .monitor-row:last-child { border-bottom:none; }
+  .monitor-row .m-label {
+    font-size:11px; font-weight:600; color:#777;
+    display:flex; align-items:center; gap:7px;
+  }
+  .monitor-row .m-label .dot-ic {
+    width:6px; height:6px; border-radius:50%;
+  }
+  .monitor-row .m-val {
+    font-size:12px; font-weight:800; color:#eee;
+    font-variant-numeric:tabular-nums;
+  }
+  .monitor-row .m-val span { font-size:9px; color:#555; font-weight:600; }
+
+  .monitor-bar-wrap {
+    margin-top:4px;
+    height:4px;
+    background:#1a1a20;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .monitor-bar {
+    height:100%;
+    border-radius:2px;
+    transition:width .5s ease, background .5s;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position:absolute;
+    bottom:0; left:0; right:0;
+    height:72px;
+    background:linear-gradient(180deg, rgba(8,8,12,0.6), #08080c 40%);
+    backdrop-filter:blur(20px);
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:0 10px 10px;
+    border-top:1px solid #151518;
+    z-index:10;
+  }
+  .nav-item {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    cursor:pointer;
+    padding:6px 14px;
+    border-radius:12px;
+    transition:.2s;
+    min-width:56px;
+  }
+  .nav-item .nav-ic { font-size:20px; filter:grayscale(1) brightness(0.5); transition:.2s; }
+  .nav-item .nav-lbl { font-size:9px; font-weight:700; color:#444; letter-spacing:0.5px; transition:.2s; }
+  .nav-item.active .nav-ic { filter:none; }
+  .nav-item.active .nav-lbl { color:#ff2d2d; }
+  .nav-item:active { background:#111; }
+
+  .nav-center {
+    width:52px; height:52px;
+    border-radius:50%;
+    background:linear-gradient(135deg, #ff2d2d, #9e0000);
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px;
+    margin-top:-18px;
+    box-shadow:0 6px 24px rgba(255,45,45,0.45), 0 0 0 4px #08080c;
+    cursor:pointer;
+    transition:.2s;
+    color:#fff;
+  }
+  .nav-center:active { transform:scale(0.92); }
+  .nav-center.boosting {
+    animation:boostPulse 0.6s ease-in-out 3;
+  }
+  @keyframes boostPulse {
+    0%,100% { box-shadow:0 6px 24px rgba(255,45,45,0.45), 0 0 0 4px #08080c; }
+    50% { box-shadow:0 6px 40px rgba(255,45,45,0.9), 0 0 0 4px #08080c, 0 0 30px rgba(255,45,45,0.6); }
+  }
+
+  /* TOAST */
+  .toast {
+    position:absolute;
+    bottom:90px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:rgba(255,45,45,0.95);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    padding:10px 22px;
+    border-radius:30px;
+    opacity:0;
+    transition:.35s cubic-bezier(.2,.9,.3,1.2);
+    pointer-events:none;
+    z-index:50;
+    white-space:nowrap;
+    box-shadow:0 8px 30px rgba(255,45,45,0.4);
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* GAME ICON COLORS */
+  .g1 { background:linear-gradient(145deg, #1a2a6c, #b21f1f, #fdbb2d); }
+  .g2 { background:linear-gradient(145deg, #0f0c29, #302b63, #24243e); }
+  .g3 { background:linear-gradient(145deg, #200122, #6f0000); }
+  .g4 { background:linear-gradient(145deg, #141e30, #243b55); }
+  .g5 { background:linear-gradient(145deg, #1f4037, #99f2c8); }
+  .g6 { background:linear-gradient(145deg, #4b134f, #c94b4b); }
+  .g7 { background:linear-gradient(145deg, #000428, #004e92); }
+  .g8 { background:linear-gradient(145deg, #3a1c71, #d76d77, #ffaf7b); }
+
+  /* OFFLINE INDICATOR */
+  .offline-banner {
+    background:rgba(255,45,45,0.15);
+    border:1px solid rgba(255,45,45,0.3);
+    border-radius:12px;
+    padding:8px 14px;
+    font-size:10px;
+    color:#ff7777;
+    font-weight:700;
+    text-align:center;
+    margin-bottom:12px;
+    display:none;
+  }
+  .offline-banner.show { display:block; }
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span id="clock">--:--</span>
+    <div class="right">
+      <span id="netType">--</span>
+      <div class="battery-indicator">
+        <span id="batteryPct">--</span>
+        <div class="battery-bar">
+          <div class="battery-fill" id="batteryFill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-mark">V</div>
+      <div class="header-title">
+        VOID <span>THE GALAXY</span>
+        <small>Game Space</small>
+      </div>
+    </div>
+    <div class="header-icons">
+      <div class="ic" onclick="toast('Pencarian')">🔍</div>
+      <div class="ic" onclick="toast('Pengaturan')">⚙️</div>
+    </div>
+  </div>
+
+  <!-- SCROLL -->
+  <div class="scroll">
+
+    <div class="offline-banner" id="offlineBanner">⚠️ Mode Offline — Data monitor terbatas</div>
+
+    <!-- BANNER -->
+    <div class="banner">
+      <div class="banner-top">
+        <div>
+          <div class="banner-tag">⚡ VOID MODE AKTIF</div>
+          <h2>Selamat Datang<br><em>Kembali, Tuan</em></h2>
+          <p>Semua game siap diluncurkan. Performa perangkat dalam kondisi optimal.</p>
+        </div>
+        <div class="banner-orb"></div>
+      </div>
+    </div>
+
+    <!-- STATS STRIP (REAL DATA) -->
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="val" id="fpsVal">--<small>fps</small></div>
+        <div class="lbl">FPS</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="coresVal">--<small>core</small></div>
+        <div class="lbl">CPU</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="memVal">--<small>GB</small></div>
+        <div class="lbl">RAM</div>
+      </div>
+    </div>
+
+    <!-- GAME LIBRARY -->
+    <div class="sec-title">
+      <h3>Game Saya</h3>
+      <a onclick="toast('Semua game')">Lihat Semua</a>
+    </div>
+    <div class="game-grid">
+      <div class="game-item" onclick="toast('Meluncurkan Mobile Legends')">
+        <div class="game-icon g1">🎮</div>
+        <div class="gname">Mobile Legends</div>
+        <div class="gtime">2j lalu</div>
+      </div>
+      <div class="game-item" onclick="toast('Meluncurkan PUBG Mobile')">
+        <div class="game-icon g2">🔫</div>
+        <div class="gname">PUBG Mobile</div>
+        <div class="gtime">5j lalu</div>
+      </div>
+      <div class="game-item" onclick="toast('Meluncurkan Free Fire')">
+        <div class="game-icon g3">🔥</div>
+        <div class="gname">Free Fire</div>
+        <div class="gtime">1h lalu</div>
+      </div>
+      <div class="game-item" onclick="toast('Meluncurkan Genshin Impact')">
+        <div class="game-icon g4">⚔️</div>
+        <div class="gname">Genshin</div>
+        <div class="gtime">3j lalu</div>
+      </div>
+      <div class="game-item" onclick="toast('Meluncurkan COD Mobile')">
+        <div class="game-icon g5">🎯</div>
+        <div class="gname">COD Mobile</div>
+        <div class="gtime">6j lalu</div>
+      </div>
+      <div class="game-item" onclick="toast('Meluncurkan Honkai Star Rail')">
+        <div class="game-icon g6">🚂</div>
+        <div class="gname">Honkai</div>
+        <div class="gtime">12j lalu</div>
+      </div>
+      <div class="game-item" onclick="toast('Meluncurkan Valorant')">
+        <div class="game-icon g7">💥</div>
+        <div class="gname">Valorant</div>
+        <div class="gtime">1h lalu</div>
+      </div>
+      <div class="game-item" onclick="toast('Meluncurkan Arena of Valor')">
+        <div class="game-icon g8">🛡️</div>
+        <div class="gname">AOV</div>
+        <div class="gtime">4j lalu</div>
+      </div>
+    </div>
+
+    <!-- LABS -->
+    <div class="sec-title">
+      <h3>Game Labs</h3>
+      <a onclick="toast('Semua tool')">Semua</a>
+    </div>
+    <div class="labs-grid">
+      <div class="lab-card active" onclick="toggleLab(this)">
+        <div class="lab-ic">⚡</div>
+        <div class="lab-info">
+          <h4>Magic Touch</h4>
+          <p>Aktif</p>
+        </div>
+        <div class="lab-toggle"></div>
+      </div>
+      <div class="lab-card" onclick="toggleLab(this)">
+        <div class="lab-ic">🎯</div>
+        <div class="lab-info">
+          <h4>Crosshair</h4>
+          <p>Nonaktif</p>
+        </div>
+        <div class="lab-toggle"></div>
+      </div>
+      <div class="lab-card active" onclick="toggleLab(this)">
+        <div class="lab-ic">📊</div>
+        <div class="lab-info">
+          <h4>Monitor</h4>
+          <p>Aktif</p>
+        </div>
+        <div class="lab-toggle"></div>
+      </div>
+      <div class="lab-card" onclick="toggleLab(this)">
+        <div class="lab-ic">🌐</div>
+        <div class="lab-info">
+          <h4>Ping Opt</h4>
+          <p>Nonaktif</p>
+        </div>
+        <div class="lab-toggle"></div>
+      </div>
+    </div>
+
+    <!-- LIVE MONITOR (REAL) -->
+    <div class="sec-title">
+      <h3>Live Monitor</h3>
+    </div>
+    <div class="monitor-card">
+      <div class="monitor-head">
+        <h4>Perangkat</h4>
+        <div class="live-dot">LIVE</div>
+      </div>
+
+      <div class="monitor-row" style="flex-direction:column; align-items:stretch; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="m-label"><span class="dot-ic" style="background:#ff2d2d;"></span> Battery</div>
+          <div class="m-val" id="monBattery">-- <span>%</span></div>
+        </div>
+        <div class="monitor-bar-wrap">
+          <div class="monitor-bar" id="monBatteryBar" style="width:0%; background:#ff2d2d;"></div>
+        </div>
+      </div>
+
+      <div class="monitor-row" style="flex-direction:column; align-items:stretch; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="m-label"><span class="dot-ic" style="background:#ffaa00;"></span> RAM (JS Heap)</div>
+          <div class="m-val" id="monRam">-- <span>MB</span></div>
+        </div>
+        <div class="monitor-bar-wrap">
+          <div class="monitor-bar" id="monRamBar" style="width:0%; background:#ffaa00;"></div>
+        </div>
+      </div>
+
+      <div class="monitor-row">
+        <div class="m-label"><span class="dot-ic" style="background:#00cc66;"></span> Network</div>
+        <div class="m-val" id="monNet">-- <span></span></div>
+      </div>
+
+      <div class="monitor-row">
+        <div class="m-label"><span class="dot-ic" style="background:#3399ff;"></span> Downlink</div>
+        <div class="m-val" id="monSpeed">-- <span>Mbps</span></div>
+      </div>
+
+      <div class="monitor-row">
+        <div class="m-label"><span class="dot-ic" style="background:#aa66ff;"></span> Layar</div>
+        <div class="m-val" id="monScreen">-- <span></span></div>
+      </div>
+
+      <div class="monitor-row">
+        <div class="m-label"><span class="dot-ic" style="background:#00ccff;"></span> Refresh Rate</div>
+        <div class="m-val" id="monRefresh">-- <span>Hz</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="setNav(this)">
+      <span class="nav-ic">🏠</span>
+      <span class="nav-lbl">Beranda</span>
+    </div>
+    <div class="nav-item" onclick="setNav(this)">
+      <span class="nav-ic">🕹️</span>
+      <span class="nav-lbl">Game</span>
+    </div>
+    <div class="nav-center" id="boostBtn" onclick="doBoost()">⚡</div>
+    <div class="nav-item" onclick="setNav(this)">
+      <span class="nav-ic">📊</span>
+      <span class="nav-lbl">Monitor</span>
+    </div>
+    <div class="nav-item" onclick="setNav(this)">
+      <span class="nav-ic">👤</span>
+      <span class="nav-lbl">Profil</span>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">Aksi dijalankan</div>
+
+</div>
+
+<script>
+/* ============================================================
+   VOID THE GALAXY - PWA REAL DATA MONITOR
+   Data yang diambil beneran dari Browser Device API
+   ============================================================ */
+
+// ===================== CLOCK =====================
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = h + ':' + m;
+}
+updateClock();
+setInterval(updateClock, 15000);
+
+// ===================== TOAST =====================
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ===================== BATTERY API (REAL) =====================
+async function initBattery() {
+  if (!navigator.getBattery) {
+    document.getElementById('batteryPct').textContent = 'N/A';
+    document.getElementById('monBattery').innerHTML = 'N/A <span></span>';
+    return;
+  }
+  try {
+    const bat = await navigator.getBattery();
+
+    function updateBattery() {
+      const pct = Math.round(bat.level * 100);
+      const charging = bat.charging;
+
+      // Status bar
+      document.getElementById('batteryPct').textContent = pct + '%';
+      const fill = document.getElementById('batteryFill');
+      fill.style.width = pct + '%';
+      fill.style.background = pct <= 20 ? '#ff2d2d' : pct <= 50 ? '#ffaa00' : '#00cc66';
+
+      // Monitor
+      document.getElementById('monBattery').innerHTML = pct + '% <span>' + (charging ? '⚡' : '') + '</span>';
+      const bar = document.getElementById('monBatteryBar');
+      bar.style.width = pct + '%';
+      bar.style.background = pct <= 20 ? '#ff2d2d' : pct <= 50 ? '#ffaa00' : '#00cc66';
+    }
+
+    updateBattery();
+    bat.addEventListener('levelchange', updateBattery);
+    bat.addEventListener('chargingchange', updateBattery);
+  } catch(e) {
+    console.log('Battery API error:', e);
+  }
+}
+initBattery();
+
+// ===================== NETWORK INFO (REAL) =====================
+function initNetwork() {
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+  function updateNet() {
+    let type = 'Unknown';
+    let speed = '--';
+
+    if (conn) {
+      type = conn.effectiveType ? conn.effectiveType.toUpperCase() : 'Unknown';
+      if (conn.downlink) speed = conn.downlink.toFixed(1);
+    } else if (navigator.onLine) {
+      type = 'Online';
+      speed = '--';
+    } else {
+      type = 'Offline';
+    }
+
+    document.getElementById('netType').textContent = type;
+    document.getElementById('monNet').innerHTML = type + ' <span>' + (navigator.onLine ? '✓' : '✗') + '</span>';
+    document.getElementById('monSpeed').innerHTML = speed + ' <span>Mbps</span>';
+
+    // Offline banner
+    const ob = document.getElementById('offlineBanner');
+    if (navigator.onLine) {
+      ob.classList.remove('show');
+    } else {
+      ob.classList.add('show');
+    }
+  }
+
+  updateNet();
+
+  if (conn) {
+    conn.addEventListener('change', updateNet);
+  }
+  window.addEventListener('online', updateNet);
+  window.addEventListener('offline', updateNet);
+}
+initNetwork();
+
+// ===================== RAM (JS HEAP - REAL) =====================
+function updateMemory() {
+  if (performance.memory) {
+    const used = performance.memory.usedJSHeapSize / (1024 * 1024);
+    const total = performance.memory.jsHeapSizeLimit / (1024 * 1024);
+    const pct = Math.min(100, (used / total) * 100);
+
+    document.getElementById('monRam').innerHTML = used.toFixed(1) + ' <span>MB / ' + total.toFixed(0) + '</span>';
+    const bar = document.getElementById('monRamBar');
+    bar.style.width = pct + '%';
+    bar.style.background = pct > 80 ? '#ff2d2d' : pct > 50 ? '#ffaa00' : '#ffaa00';
+  } else {
+    document.getElementById('monRam').innerHTML = 'N/A <span></span>';
+  }
+}
+updateMemory();
+setInterval(updateMemory, 2000);
+
+// ===================== DEVICE INFO (REAL) =====================
+function initDeviceInfo() {
+  // CPU Cores
+  const cores = navigator.hardwareConcurrency || 'N/A';
+  document.getElementById('coresVal').innerHTML = cores + '<small>core</small>';
+
+  // Device Memory
+  const mem = navigator.deviceMemory || 'N/A';
+  document.getElementById('memVal').innerHTML = mem + '<small>GB</small>';
+
+  // Screen
+  const w = window.screen.width;
+  const h = window.screen.height;
+  const dpr = window.devicePixelRatio || 1;
+  document.getElementById('monScreen').innerHTML = w + '×' + h + ' <span>@' + dpr + 'x</span>';
+}
+initDeviceInfo();
+
+// ===================== REFRESH RATE (REAL via rAF) =====================
+let refreshCount = 0;
+let refreshStart = performance.now();
+function measureRefresh() {
+  refreshCount++;
+  const now = performance.now();
+  if (now - refreshStart >= 1000) {
+    const hz = Math.round((refreshCount * 1000) / (now - refreshStart));
+    document.getElementById('monRefresh').innerHTML = hz + ' <span>Hz</span>';
+    refreshCount = 0;
+    refreshStart = now;
+  }
+  requestAnimationFrame(measureRefresh);
+}
+requestAnimationFrame(measureRefresh);
+
+// ===================== FPS (REAL) =====================
+let fpsFrames = 0;
+let fpsLast = performance.now();
+function measureFPS() {
+  fpsFrames++;
+  const now = performance.now();
+  if (now - fpsLast >= 1000) {
+    const fps = Math.round((fpsFrames * 1000) / (now - fpsLast));
+    document.getElementById('fpsVal').innerHTML = fps + '<small>fps</small>';
+    fpsFrames = 0;
+    fpsLast = now;
+  }
+  requestAnimationFrame(measureFPS);
+}
+requestAnimationFrame(measureFPS);
+
+// ===================== LAB TOGGLE =====================
+function toggleLab(el) {
+  el.classList.toggle('active');
+  const p = el.querySelector('.lab-info p');
+  const h = el.querySelector('.lab-info h4');
+  if (el.classList.contains('active')) {
+    p.textContent = 'Aktif';
+    p.style.color = '#ff2d2d';
+    toast(h.textContent + ' diaktifkan');
+  } else {
+    p.textContent = 'Nonaktif';
+    p.style.color = '#555';
+    toast(h.textContent + ' dinonaktifkan');
+  }
+}
+
+// ===================== NAV =====================
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  toast(el.querySelector('.nav-lbl').textContent);
+}
+
+// ===================== BOOST (REAL - clear cache, GC) =====================
+async function doBoost() {
+  const btn = document.getElementById('boostBtn');
+  btn.classList.add('boosting');
+  toast('⚡ Boosting...');
+
+  try {
+    // 1. Clear cache storage
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+
+    // 2. Clear session storage (kecuali data penting)
+    try { sessionStorage.clear(); } catch(e) {}
+
+    // 3. Force garbage collection hint (dengan alokasi besar lalu dilepas)
+    let temp = new Array(1000000).fill(0);
+    temp = null;
+
+    // 4. Update memory display
+    setTimeout(() => {
+      updateMemory();
+      btn.classList.remove('boosting');
+      toast('✅ Boost selesai! Cache dibersihkan');
+    }, 800);
+  } catch(e) {
+    btn.classList.remove('boosting');
+    toast('⚠️ Boost parsial: ' + e.message);
+  }
+}
+
+// ===================== PWA MANIFEST (inline) =====================
+const manifestData = {
+  name: "VOID THE GALAXY - Game Space",
+  short_name: "VOID GS",
+  description: "Game Space Ultimate by VOID",
+  start_url: ".",
+  display: "standalone",
+  orientation: "portrait",
+  background_color: "#08080c",
+  theme_color: "#ff2d2d",
+  icons: [
+    {
+      src: "data:image/svg+xml;base64," + btoa(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">' +
+        '<rect width="192" height="192" rx="42" fill="#08080c"/>' +
+        '<rect x="20" y="20" width="152" height="152" rx="32" fill="url(#g)"/>' +
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="#ff2d2d"/><stop offset="1" stop-color="#b80000"/>' +
+        '</linearGradient></defs>' +
+        '<text x="96" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="900" fill="#fff" text-anchor="middle">V</text>' +
+        '</svg>'
+      ),
+      sizes: "192x192",
+      type: "image/svg+xml"
+    },
+    {
+      src: "data:image/svg+xml;base64," + btoa(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">' +
+        '<rect width="512" height="512" rx="112" fill="#08080c"/>' +
+        '<rect x="53" y="53" width="406" height="406" rx="85" fill="url(#g)"/>' +
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="#ff2d2d"/><stop offset="1" stop-color="#b80000"/>' +
+        '</linearGradient></defs>' +
+        '<text x="256" y="347" font-family="Arial, sans-serif" font-size="267" font-weight="900" fill="#fff" text-anchor="middle">V</text>' +
+        '</svg>'
+      ),
+      sizes: "512x512",
+      type: "image/svg+xml"
+    }
+  ]
+};
+
+const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+const manifestURL = URL.createObjectURL(manifestBlob);
+document.getElementById('manifestLink').setAttribute('href', manifestURL);
+
+// ===================== REGISTER SERVICE WORKER (inline) =====================
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'void-gs-v1';
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(clients.claim());
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(
+        caches.match(e.request).then(r => r || fetch(e.request).catch(() => r))
+      );
+    });
+  `;
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  const swURL = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swURL).catch(() => {
+    // SW tidak bisa daftar dari blob di beberapa browser - skip silently
+  });
+}
+</script>
+</body>
+</html>
